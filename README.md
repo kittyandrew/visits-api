@@ -13,7 +13,7 @@ Features:
 Figure out :)
 
 # Test
-There are several scripts that make easier to test the api from command line.  
+There are several scripts that make it easier to test the api from command line.  
 If you have sufficient skill with linux bash/shell you can open them and try changing some values yourself.  
   
 Available scripts:

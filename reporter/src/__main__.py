@@ -18,8 +18,9 @@ RABBITMQ_PASS = os.environ.get("RABBITMQ_PASS")   or "password"
 POSTGRES_HOST = os.environ.get("POSTGRES_HOST")   or "kpi-postgres"
 RABBITMQ_HOST = os.environ.get("RABBITMQ_HOST")   or "kpi-rabbitmq"
 REDIS_HOST    = os.environ.get("REDIS_HOST")      or "kpi-redis"
-TIMEOUT       = int(os.environ.get("TIMEOUT", 0)) or 30  # minutes
-N_TOP_RESULTS = int(os.environ.get("N_TOP_RESULTS", 0)) or 10  # amount of top popular paths to show
+TIMEOUT       = int(os.environ.get("TIMEOUT", 30))
+N_TOP_RESULTS = int(os.environ.get("N_TOP_RESULTS", 10))
+REPORTS_LIMIT = int(os.environ.get("REPORTS_LIMIT", 1))
 
 
 async def main():
@@ -53,7 +54,7 @@ async def main():
                 cached = {
                     "date": datetime.datetime.now().isoformat(),
                     "emails_left": 1,
-                    "emails_limit": 1,
+                    "emails_limit": REPORTS_LIMIT,
                 }
             else:
                 cached = ujson.loads(cached.decode())
@@ -88,8 +89,7 @@ async def main():
                     await postgres.release(con)
 
                 await send_email(email, ctx)
-                
-                logging.error("Something here worked, early termination.. BEEP BOOP")
+
                 # finally commit to db
                 await redis.set(email, ujson.dumps(cached).encode())
 
