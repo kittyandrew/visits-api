@@ -1,0 +1,3 @@
+py3-validate-email
+aio-pika
+sanic

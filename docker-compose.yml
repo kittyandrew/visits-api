@@ -1,0 +1,82 @@
+version: "3.8"
+
+services:
+  rabbitmq:
+    container_name: kpi-rabbitmq
+    image: rabbitmq:3-management-alpine
+    restart: always
+    ports:
+      # development
+      - 5672:5672
+    volumes:
+      # consistent data
+      - rabbitmq_data:/var/lib/rabbitmq:rw
+      # TODO: describe conf issue (https://github.com/docker-library/rabbitmq/issues/61)
+      # config
+      - .config/:/etc/rabbitmq/:rw
+    networks:
+      - default
+      - caddynet
+
+  redis:
+    container_name: kpi-redis
+    image: redis:alpine
+    restart: always
+
+  postgres:
+    container_name: kpi-postgres
+    image: postgres:alpine
+    restart: always
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_PASSWORD=${POSTGRES_PASS}
+      - POSTGRES_USER=${POSTGRES_USER}
+
+  gateway:
+    container_name: kpi-gateway
+    image: kpi-gateway
+    build: gateway
+    restart: always
+    depends_on:
+      - rabbitmq
+      - redis
+      - postgres
+    env_file:
+      - .env
+    networks:
+      - default
+      - caddynet
+
+  counter:
+    container_name: kpi-counter
+    image: kpi-counter
+    build: counter
+    restart: always
+    depends_on:
+      - rabbitmq
+      - redis
+      - postgres
+      - gateway
+    env_file:
+      - .env
+
+  reporter:
+    container_name: kpi-reporter
+    image: kpi-reporter
+    build: reporter
+    restart: always
+    depends_on:
+      - rabbitmq
+      - redis
+      - postgres
+      - gateway
+    env_file:
+      - .env
+
+volumes:
+  rabbitmq_data:
+
+networks:
+  caddynet:
+    external:
+      name: caddynet

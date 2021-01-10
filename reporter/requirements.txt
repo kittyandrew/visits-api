@@ -1,0 +1,5 @@
+aiosmtplib
+aio-pika
+aioredis
+asyncpg
+ujson
