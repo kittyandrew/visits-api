@@ -1,13 +1,14 @@
 # Description
 This is my homework, a microservice-based API using rabbitmq, postgres and redis. 
 The goal of the service is to provide easy-to-use APi for collecting activity on your website.  
+  
 Features:
-  * API is using tokens. separate tokens for *append* (collecting data) and *read* (getting report) rights.
-  * collect data on your user's activity:
-     * total visits
-     * unique users
-     * amount of visits for each page
-  * request report on your domain, it will arrive to provided address in form of email.
+* API is using tokens. separate tokens for *append* (collecting data) and *read* (getting report) rights.
+* collect data on your user's activity:
+    * total visits
+    * unique users
+    * amount of visits for each page
+* request report on your domain, it will arrive to provided address in form of email.
 
 # Setup (\#TODO)
 Figure out :)
