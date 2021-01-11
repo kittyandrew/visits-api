@@ -53,7 +53,7 @@ async def main():
             if not cached:
                 cached = {
                     "date": datetime.datetime.now().isoformat(),
-                    "emails_left": 1,
+                    "emails_left": REPORTS_LIMIT,
                     "emails_limit": REPORTS_LIMIT,
                 }
             else:

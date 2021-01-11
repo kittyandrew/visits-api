@@ -36,8 +36,8 @@ async def send_email(email, ctx):
     # Add note about how many emails left
     text += NEWLINE + "<p style=\"font-size: 8px;\">"
     text += "<b>Note:</b> every user has certain amount of emails available to them every 30 minutes. "
-    text += f"You have {ctx['emails_left']}, consider waiting some time before sending next request or "
-    text += "<b>upgrade to premium</b>"
+    text += f"You have {ctx['emails_left']} left, consider waiting some time before sending next request or "
+    text += "<b>upgrade to premium</b>."
     text += "</p>"
         
     message.attach(MIMEText(f"<html><head></head><body>{text}</body></html>", "html", "utf-8"))
