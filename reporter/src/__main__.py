@@ -13,12 +13,12 @@ import os
 POSTGRES_DB   = os.environ["POSTGRES_DB"]
 POSTGRES_USER = os.environ["POSTGRES_USER"]
 POSTGRES_PASS = os.environ["POSTGRES_PASS"]
-RABBITMQ_USER = os.environ.get("RABBITMQ_USER")   or "rabbit"
-RABBITMQ_PASS = os.environ.get("RABBITMQ_PASS")   or "password"
-POSTGRES_HOST = os.environ.get("POSTGRES_HOST")   or "kpi-postgres"
-RABBITMQ_HOST = os.environ.get("RABBITMQ_HOST")   or "kpi-rabbitmq"
-REDIS_HOST    = os.environ.get("REDIS_HOST")      or "kpi-redis"
-TIMEOUT       = int(os.environ.get("TIMEOUT", 30))
+RABBITMQ_USER = os.environ.get("RABBITMQ_USER", "rabbit")
+RABBITMQ_PASS = os.environ.get("RABBITMQ_PASS", "password")
+POSTGRES_HOST = os.environ.get("POSTGRES_HOST", "kpi-postgres")
+RABBITMQ_HOST = os.environ.get("RABBITMQ_HOST", "kpi-rabbitmq")
+REDIS_HOST    = os.environ.get("REDIS_HOST", "kpi-redis")
+TIMEOUT       = int(os.environ.get("TIMEOUT", 30))  # statistics not older than N days
 N_TOP_RESULTS = int(os.environ.get("N_TOP_RESULTS", 10))
 REPORTS_LIMIT = int(os.environ.get("REPORTS_LIMIT", 1))
 
@@ -72,7 +72,7 @@ async def main():
                     con = await postgres.acquire()
                     rows = await con.fetch(
                         "SELECT * FROM visits WHERE domain = $1 AND date > $2",
-                        domain, datetime.datetime.now() - datetime.timedelta(days=30)
+                        domain, datetime.datetime.now() - datetime.timedelta(days=TIMEOUT)
                     )
                     logging.info(f"Collected {len(rows)} rows for domain \"{domain}\".")
                     # Compile stats for the domain from all data

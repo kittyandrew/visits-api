@@ -12,9 +12,9 @@ from .utils import verify
 # CONFIG
 APPEND_TOKEN     = os.environ["APPEND_TOKEN"]   # has only append rights to the data
 READ_TOKEN       = os.environ["READ_TOKEN"]     # has read access to the data
-RABBITMQ_HOST    = os.environ.get("RABBITMQ_HOST")  or "kpi-rabbitmq"
-RABBITMQ_USER    = os.environ.get("RABBITMQ_USER")  or "rabbit"
-RABBITMQ_PASS    = os.environ.get("RABBITMQ_PASS")  or "password"
+RABBITMQ_HOST    = os.environ.get("RABBITMQ_HOST", "kpi-rabbitmq")
+RABBITMQ_USER    = os.environ.get("RABBITMQ_USER", "rabbit")
+RABBITMQ_PASS    = os.environ.get("RABBITMQ_PASS", "password")
 
 app = Sanic(name="gateway")
 
@@ -83,12 +83,14 @@ async def api_statistics_visits_report(request):
         return err
 
     # email to send statistics to
-    email, err = verify(data, "email", str, max_len=256)
+    email, err = verify(data, "email", str, max_len=128)
     if not email:
         return err
 
-    # verify email via regex (using module 'py3-validate-email')
-    #     - checking with both regex and SMTP HELO request (if slow, remove the latter)
+    # verify email (using module 'py3-validate-email')
+    #     - checking with both regex and SMTP HELO request
+    # TODO: it is definitely slow + sync (blocking)
+    #       so, redo SMTP HELO check from scratch with async lib (aiosmtplib)
     verified = validate_email(email_address=email, check_regex=True, check_mx=True)
     if not verified:
         return json(

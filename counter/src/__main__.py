@@ -10,10 +10,10 @@ import os
 POSTGRES_DB   = os.environ["POSTGRES_DB"]
 POSTGRES_USER = os.environ["POSTGRES_USER"]
 POSTGRES_PASS = os.environ["POSTGRES_PASS"]
-RABBITMQ_USER = os.environ.get("RABBITMQ_USER") or "rabbit"
-RABBITMQ_PASS = os.environ.get("RABBITMQ_PASS") or "password"
-POSTGRES_HOST = os.environ.get("POSTGRES_HOST") or "kpi-postgres"
-RABBITMQ_HOST = os.environ.get("RABBITMQ_HOST") or "kpi-rabbitmq"
+RABBITMQ_USER = os.environ.get("RABBITMQ_USER", "rabbit")
+RABBITMQ_PASS = os.environ.get("RABBITMQ_PASS", "password")
+POSTGRES_HOST = os.environ.get("POSTGRES_HOST", "kpi-postgres")
+RABBITMQ_HOST = os.environ.get("RABBITMQ_HOST", "kpi-rabbitmq")
 
 
 async def main():
